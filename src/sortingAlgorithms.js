@@ -20,12 +20,12 @@ function bubbleSort(array, animations) {
                         change = true;
                         animations.push([i, i + 1, 1]);
                         animations.push([i, i + 1, 2, array[i + 1], array[i]]);
-                        animations.push([i, i + 1, 3]);
+                        // animations.push([i, i + 1, 3]);
                   } else {
                         animations.push([i, i + 1, 3]);
                   }
                   animations.push([i, i + 1, null]);
             }
       } while (change);
-      console.log(array);
+      animations.push([0, 0, 4]);
 }

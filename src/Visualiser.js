@@ -3,12 +3,13 @@ import './Visualiser.css';
 import { bubbleSortAnimate } from './sortingAlgorithms.js'
 
 
-const ANIMATION_SPEED = 30;
-const NUMBER_OF_BARS = 20;
 
 class Visualiser extends Component {
       state = {
             numbers: [],
+            size: '25',
+            speed: '50',
+            status: false,
       }
 
 
@@ -16,9 +17,10 @@ class Visualiser extends Component {
             this.generateNumbers();
       }
 
+
       generateNumbers() {
             const numbers = [];
-            for (let i = 0; i < NUMBER_OF_BARS; i++) {
+            for (let i = 0; i < this.state.size; i++) {
                   numbers.push(getRandomNumber(1, 500));
             }
             this.setState({
@@ -26,8 +28,44 @@ class Visualiser extends Component {
             });
       }
 
+      handleChangeSize(event) {
+            this.setState({
+                  size: event.target.value,
+            })
+            this.generateNumbers();
+      }
+
+      handleChangeSpeed(event) {
+            this.setState({
+                  speed: event.target.value,
+            })
+      }
+
+      stopSorting(generateNumbers) {
+            let blockedElements = document.getElementsByClassName('blocked');
+            let numberBars = document.getElementsByClassName('number-bar');
+            let stopButton = document.getElementById('stop');
+            let killId = setTimeout(function () {
+                  for (var i = killId; i > 0; i--) clearInterval(i);
+                  for (let i = 0; i < numberBars.length; i++) {
+                        numberBars[i].style.backgroundColor = 'teal';
+                  }
+            }, 10);
+            this.generateNumbers();
+            for (let i = 0; i < blockedElements.length; i++) {
+                  blockedElements[i].disabled = !blockedElements[i].disabled;
+            }
+            stopButton.style.visibility = 'hidden';
+      }
+
       visualizeBubbleSort() {
             const animations = bubbleSortAnimate(this.state.numbers);
+            let blockedElements = document.getElementsByClassName('blocked');
+            let stopButton = document.getElementById('stop');
+            for (let i = 0; i < blockedElements.length; i++) {
+                  blockedElements[i].disabled = !blockedElements[i].disabled;
+            }
+            stopButton.style.visibility = 'visible';
             for (let i = 0; i < animations.length; i++) {
                   let numberBars = document.getElementsByClassName('number-bar');
                   const [firstBarID, secBarID, action, height1, height2] = animations[i];
@@ -46,31 +84,41 @@ class Visualiser extends Component {
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
-                        }, i * ANIMATION_SPEED);
+                        }, i * this.state.speed);
                   }
                   if (action === 2) {
-                        color = 'red';
+                        color = 'green';
                         setTimeout(() => {
                               firstBarStyle.height = `${height2}px`;
                               secBarStyle.height = `${height1}px`;
-                        }, i * ANIMATION_SPEED);
+                        }, i * this.state.speed);
                   }
                   if (action === 3) {
                         color = 'green';
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
-                        }, i * ANIMATION_SPEED);
+                        }, i * this.state.speed);
                   }
                   if (action === null) {
                         color = 'teal';
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
-                        }, i * ANIMATION_SPEED);
+                        }, i * this.state.speed);
+                  }
+                  if (action === 4) {
+                        setTimeout(() => {
+                              for (let i = 0; i < blockedElements.length; i++) {
+                                    blockedElements[i].disabled = !blockedElements[i].disabled;
+                                    stopButton.style.visibility = 'hidden';
+                              }
+                        }, i * this.state.speed);
                   }
             }
+
       }
+
 
 
       render() {
@@ -78,13 +126,24 @@ class Visualiser extends Component {
 
             return (
                   <div className="visualiser-container">
+                        <button className='button blocked' onClick={() => this.generateNumbers()}>Generate Numbers</button>
                         <div className="bars-container">
                               {numbers.map((val, id) => (
                                     <div className='number-bar' key={id} style={{ height: val }}></div>
                               ))}
                         </div>
-                        <button onClick={() => this.generateNumbers()}>Generate Numbers</button>
-                        <button onClick={() => this.visualizeBubbleSort()}>Bubble sort</button>
+
+                        <button className='button blocked' onClick={() => this.visualizeBubbleSort()}>Bubble sort</button>
+                        <button className='button' id='stop' onClick={() => this.stopSorting()} >Stop</button>
+                        <label>
+                              Number of elements to sort:
+                              <input className='input-range blocked' type="range" value={this.state.size} min='5' max='100' step='5' onChange={(e) => this.handleChangeSize(e)} disabled={this.state.status} />
+                        </label>
+                        <label>
+                              Delay between iterations:
+                              <input className='input-range blocked' type="range" value={this.state.speed} min='10' max='300' step='10' onChange={(e) => this.handleChangeSpeed(e)} disabled={this.state.status} />
+                              {this.state.speed} ms
+                        </label>
                   </div>
             );
       }
