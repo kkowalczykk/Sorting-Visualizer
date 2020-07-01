@@ -8,7 +8,7 @@ class Visualiser extends Component {
       state = {
             numbers: [],
             size: '25',
-            speed: '50',
+            speed: '30',
             status: false,
       }
 
@@ -187,7 +187,7 @@ class Visualiser extends Component {
                         </label>
                         <label>
                               Delay between iterations:
-                              <input className='input-range blocked' type="range" value={this.state.speed} min='10' max='300' step='10' onChange={(e) => this.handleChangeSpeed(e)} disabled={this.state.status} />
+                              <input className='input-range blocked' type="range" value={this.state.speed} min='5' max='300' step='5' onChange={(e) => this.handleChangeSpeed(e)} disabled={this.state.status} />
                               {this.state.speed} ms
                         </label>
                   </div>

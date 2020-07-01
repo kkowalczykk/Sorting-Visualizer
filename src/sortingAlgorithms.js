@@ -40,6 +40,7 @@ function bubbleSort(array, animations) {
                   }
                   animations.push([i, i + 1, null]); // Set default colors on compared elements
             }
+            array.pop();
       } while (change);
       animations.push([0, 0, 4]); // End of visualisation
 }
