@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './Visualiser.css';
-import { bubbleSortAnimate } from './sortingAlgorithms.js'
+import { bubbleSortAnimate, selectionSortAnimate } from './sortingAlgorithms.js'
 
-
+const PRIMARY_COLOR = '#5b62c0';
 
 class Visualiser extends Component {
       state = {
@@ -21,7 +21,7 @@ class Visualiser extends Component {
       generateNumbers() {
             const numbers = [];
             for (let i = 0; i < this.state.size; i++) {
-                  numbers.push(getRandomNumber(1, 500));
+                  numbers.push(getRandomNumber(20, 500)); // From 20 beacuse these numbers defines height of bars (bar with height less that 20px is barely visible)
             }
             this.setState({
                   numbers: numbers,
@@ -48,7 +48,7 @@ class Visualiser extends Component {
             let killId = setTimeout(function () {
                   for (var i = killId; i > 0; i--) clearInterval(i);
                   for (let i = 0; i < numberBars.length; i++) {
-                        numberBars[i].style.backgroundColor = 'teal';
+                        numberBars[i].style.backgroundColor = PRIMARY_COLOR;
                   }
             }, 10);
             this.generateNumbers();
@@ -72,36 +72,29 @@ class Visualiser extends Component {
                   let firstBarStyle = numberBars[firstBarID].style;
                   let secBarStyle = numberBars[secBarID].style;
                   let color;
-                  // if (action === 0) {
-                  //       color = 'purple';
-                  //       setTimeout(() => {
-                  //             firstBarStyle.backgroundColor = color;
-                  //             secBarStyle.backgroundColor = color;
-                  //       }, i * ANIMATION_SPEED);
-                  // }
+
                   if (action === 1) {
-                        color = 'red';
+                        color = '#FF6347';
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
                         }, i * this.state.speed);
                   }
                   if (action === 2) {
-                        color = 'green';
                         setTimeout(() => {
                               firstBarStyle.height = `${height2}px`;
                               secBarStyle.height = `${height1}px`;
                         }, i * this.state.speed);
                   }
                   if (action === 3) {
-                        color = 'green';
+                        color = '#00FF00';
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
                         }, i * this.state.speed);
                   }
                   if (action === null) {
-                        color = 'teal';
+                        color = PRIMARY_COLOR;
                         setTimeout(() => {
                               firstBarStyle.backgroundColor = color;
                               secBarStyle.backgroundColor = color;
@@ -119,7 +112,59 @@ class Visualiser extends Component {
 
       }
 
-
+      visualizeSelectionSort() {
+            const animations = selectionSortAnimate(this.state.numbers);
+            let blockedElements = document.getElementsByClassName('blocked');
+            let stopButton = document.getElementById('stop');
+            for (let i = 0; i < blockedElements.length; i++) {
+                  blockedElements[i].disabled = !blockedElements[i].disabled;
+            }
+            stopButton.style.visibility = 'visible';
+            for (let i = 0; i < animations.length; i++) {
+                  let numberBars = document.getElementsByClassName('number-bar');
+                  const [firstBarID, secBarID, action, height1, height2] = animations[i];
+                  let firstBarStyle = numberBars[firstBarID].style;
+                  let secBarStyle = numberBars[secBarID].style;
+                  let color;
+                  if (action === 0) {
+                        color = '#00FF00';
+                        setTimeout(() => {
+                              firstBarStyle.backgroundColor = color;
+                              secBarStyle.backgroundColor = color;
+                        }, i * this.state.speed);
+                  }
+                  if (action === 1) {
+                        color = '#FF6347';
+                        setTimeout(() => {
+                              firstBarStyle.backgroundColor = PRIMARY_COLOR;
+                              secBarStyle.backgroundColor = color;
+                        }, i * this.state.speed);
+                  }
+                  if (action === 2) {
+                        color = PRIMARY_COLOR;
+                        setTimeout(() => {
+                              secBarStyle.backgroundColor = color;
+                        }, i * this.state.speed);
+                  }
+                  if (action === 3) {
+                        color = PRIMARY_COLOR;
+                        setTimeout(() => {
+                              firstBarStyle.height = `${height2}px`;
+                              secBarStyle.height = `${height1}px`;
+                              firstBarStyle.backgroundColor = color;
+                              secBarStyle.backgroundColor = color;
+                        }, i * this.state.speed);
+                  }
+                  if (action === 4) {
+                        setTimeout(() => {
+                              for (let i = 0; i < blockedElements.length; i++) {
+                                    blockedElements[i].disabled = !blockedElements[i].disabled;
+                                    stopButton.style.visibility = 'hidden';
+                              }
+                        }, i * this.state.speed);
+                  }
+            }
+      }
 
       render() {
             const { numbers } = this.state;
@@ -134,6 +179,7 @@ class Visualiser extends Component {
                         </div>
 
                         <button className='button blocked' onClick={() => this.visualizeBubbleSort()}>Bubble sort</button>
+                        <button className='button blocked' onClick={() => this.visualizeSelectionSort()}>Selection sort</button>
                         <button className='button' id='stop' onClick={() => this.stopSorting()} >Stop</button>
                         <label>
                               Number of elements to sort:
