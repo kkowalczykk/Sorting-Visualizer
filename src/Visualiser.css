@@ -1,27 +1,77 @@
-
-.visualiser-container{
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-}
-.bars-container{
-      display: flex;
-      height: 700px;
-      width: 70%;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 50px;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+* {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
 }
 
-.number-bar{
-      background-color: #5b62c0;
-      width: 5px;
-      margin: 0 1px;
+.visualiser-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#stop{
-      visibility: hidden;
+.toolbar {
+  display: flex;
+  justify-content: center;
+  background-color: #575353;
+  width: 100%;
+  height: 100px;
+  align-items: center;
+}
+
+.toolbar .button {
+  background-color: #233858;
+  border: none;
+  margin: 10px 10px;
+  padding: 10px 10px;
+  width: 100px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.toolbar .generate {
+  background-color: #1c56ac;
+}
+
+.toolbar .stop {
+  background-color: #851a0c;
+}
+
+.toolbar label {
+  width: 200px;
+  margin: 10px 10px;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.toolbar label input {
+  cursor: pointer;
+}
+
+.toolbar button:disabled {
+  background-color: #9c9696;
+}
+
+.bars-container {
+  display: flex;
+  height: 700px;
+  width: 1000px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 50px 0;
+}
+
+.number-bar {
+  background-color: #5b62c0;
+  margin: 0 1px;
+}
+
+#stop {
+  visibility: hidden;
 }

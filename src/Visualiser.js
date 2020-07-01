@@ -21,7 +21,7 @@ class Visualiser extends Component {
       generateNumbers() {
             const numbers = [];
             for (let i = 0; i < this.state.size; i++) {
-                  numbers.push(getRandomNumber(20, 500)); // From 20 beacuse these numbers defines height of bars (bar with height less that 20px is barely visible)
+                  numbers.push(getRandomNumber(20, 700)); // From 20 beacuse these numbers defines height of bars (bar with height less that 20px is barely visible)
             }
             this.setState({
                   numbers: numbers,
@@ -58,8 +58,8 @@ class Visualiser extends Component {
             stopButton.style.visibility = 'hidden';
       }
 
-      visualizeBubbleSort() {
-            const animations = bubbleSortAnimate(this.state.numbers);
+      async visualizeBubbleSort() {
+            const animations = await bubbleSortAnimate(this.state.numbers);
             let blockedElements = document.getElementsByClassName('blocked');
             let stopButton = document.getElementById('stop');
             for (let i = 0; i < blockedElements.length; i++) {
@@ -171,25 +171,29 @@ class Visualiser extends Component {
 
             return (
                   <div className="visualiser-container">
-                        <button className='button blocked' onClick={() => this.generateNumbers()}>Generate Numbers</button>
+                        <div className="toolbar">
+                              <button className='button generate blocked' onClick={() => this.generateNumbers()}>Generate Numbers</button>
+                              <button className='button blocked' onClick={() => this.visualizeBubbleSort()}>Bubble sort</button>
+                              <button className='button blocked' onClick={() => this.visualizeSelectionSort()}>Selection sort</button>
+                              <label>
+                                    Number of elements to sort:
+                              <input className='input-range blocked' type="range" value={this.state.size} min='5' max='100' step='5' onChange={(e) => this.handleChangeSize(e)} disabled={this.state.status} />
+                              </label>
+                              <label>
+                                    Delay between iterations:
+                              <input className='input-range blocked' type="range" value={this.state.speed} min='5' max='300' step='5' onChange={(e) => this.handleChangeSpeed(e)} disabled={this.state.status} />
+                                    {this.state.speed} ms
+                        </label>
+                              <button className='button stop' id='stop' onClick={() => this.stopSorting()} >Stop</button>
+                        </div>
                         <div className="bars-container">
                               {numbers.map((val, id) => (
-                                    <div className='number-bar' key={id} style={{ height: val }}></div>
+                                    <div className='number-bar' key={id} style={{ height: val, width: 1000 / this.state.numbers.length }}></div>
                               ))}
                         </div>
 
-                        <button className='button blocked' onClick={() => this.visualizeBubbleSort()}>Bubble sort</button>
-                        <button className='button blocked' onClick={() => this.visualizeSelectionSort()}>Selection sort</button>
-                        <button className='button' id='stop' onClick={() => this.stopSorting()} >Stop</button>
-                        <label>
-                              Number of elements to sort:
-                              <input className='input-range blocked' type="range" value={this.state.size} min='5' max='100' step='5' onChange={(e) => this.handleChangeSize(e)} disabled={this.state.status} />
-                        </label>
-                        <label>
-                              Delay between iterations:
-                              <input className='input-range blocked' type="range" value={this.state.speed} min='5' max='300' step='5' onChange={(e) => this.handleChangeSpeed(e)} disabled={this.state.status} />
-                              {this.state.speed} ms
-                        </label>
+
+
                   </div>
             );
       }
